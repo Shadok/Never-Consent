@@ -30,9 +30,14 @@
     }
   }
 
-  function elClick(selector, callback) {
+  function elClick(selector, callback, targetParent = false) {
     waitForElement(selector, () => {
-      document.querySelector(selector).click();
+      // target parent element
+      if (targetParent) {
+        document.querySelector(selector).parentNode.click();
+      } else {
+        document.querySelector(selector).click();
+      }
 
       if (callback) {
         callback();
@@ -131,16 +136,14 @@
 
       // sirdata
       if (!!window.Sddan && window.Sddan.cmpLoaded) {
-        elClick('.sd-cmp-scPzo', () => {
-          elClick('.sd-cmp-25WIV', () => {
-            elClick('.sd-cmp-2HNNR', () => clearInterval(kick));
-          });
+        elClick('#sd-cmp #main_body button:nth-child(2)', () => {
+          elClick('#sd-cmp #details_body + div button', () => clearInterval(kick));
         });
       }
 
       // appconsent
-      if (!!window.appConsent && window.appConsent.denyAll) {
-        appConsent.denyAll();
+      if (!!window.__tcfapi) {
+        __tcfapi('deny', 2, () => {});
       }
 
       // onetrust
